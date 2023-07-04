@@ -9,6 +9,7 @@ from tensorflow.keras.models import Model, Sequential
 from tensorflow.keras import regularizers
 from tensorflow.keras import backend as K
 from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping, ReduceLROnPlateau
+from weighted_sampler import *
 
 from datetime import datetime
 import os
@@ -281,15 +282,19 @@ class ShapleySampler(Layer):
     '''
     Layer to Sample S according to the Shapley Kernel Weights
     '''
-    def __init__(self, num_features, paired_sampling=True, num_samples=1, **kwargs):
+    def __init__(self, num_features, paired_sampling=True, num_samples=1, alpha=1, beta = 24, **kwargs):
         super(ShapleySampler, self).__init__(**kwargs)
         
         self.num_features = num_features
         
         # Weighting kernel (probability of each subset size). 
         #credit = https://github.com/iancovert/sage/blob/master/sage/kernel_estimator.py
-        w = tf.range(1, num_features)
-        w = 1 / (w * (num_features - w))
+        if alpha == 1 and beta == 1:
+            w = tf.range(1, num_features)
+            w = 1 / (w * (num_features - w))
+        else:
+            print("Using alpha beta")
+            w = tf.constant(compute_weighted_shapley_wts(num_features, alpha, beta))
         self.w = w / K.sum(w)
         
         self.paired_sampling = paired_sampling

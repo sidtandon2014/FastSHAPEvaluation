@@ -52,7 +52,7 @@ class ShapleySampler(Layer):
     '''
     Layer to Sample S according to the Shapley Kernel Weights
     '''
-    def __init__(self, num_features, paired_sampling=True, num_samples=1,alpha=1, beta = 16, **kwargs):
+    def __init__(self, num_features, paired_sampling=True, num_samples=1,alpha=1, beta = 24, **kwargs):
         super(ShapleySampler, self).__init__(**kwargs)
         
         self.num_features = num_features

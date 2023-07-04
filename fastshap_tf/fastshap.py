@@ -527,7 +527,7 @@ class ShapleySampler(Layer):
     '''
     Layer to Sample S according to the Shapley Kernel Weights
     '''
-    def __init__(self, num_features, paired_sampling=True, num_samples=1,alpha=1, beta = 16, **kwargs):
+    def __init__(self, num_features, paired_sampling=True, num_samples=1,alpha=1, beta = 24, **kwargs):
         super(ShapleySampler, self).__init__(**kwargs)
         
         self.num_features = num_features
@@ -539,6 +539,7 @@ class ShapleySampler(Layer):
             w = tf.range(1, num_features)
             w = 1 / (w * (num_features - w))
         else:
+            print("Use alpha and beta")
             w = tf.constant(compute_weighted_shapley_wts(num_features, alpha, beta))
         
         self.w = w / K.sum(w)
